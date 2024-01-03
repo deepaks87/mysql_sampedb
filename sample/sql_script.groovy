@@ -20,8 +20,7 @@ pipeline {
                     def mysqlPassword = 'dbops@123'
                     def mysqlDatabase = 'example'
 
-                    sh "mysql -h $mysqlHost -u $mysqlUser -p$mysqlPassword $mysqlDatabase < sql_queries/query1.sql"
-                    sh "mysql -h $mysqlHost -u $mysqlUser -p$mysqlPassword $mysqlDatabase < sql_queries/query2.sql"
+                    sh "mysql -h $mysqlHost -u $mysqlUser -p$mysqlPassword $mysqlDatabase < sample/mysql_sample_data.sql"
                     // Add more SQL queries as needed
                 }
             }
