@@ -462,38 +462,3 @@ VALUES
   
   
 
-  
-mysqldump  example  --single-transaction --skip-add-locks  --quick -R -E --triggers --set-gtid-purged=OFF --master-data=2 | gzip > example.sql.gz
-
-gunzip example.sql.gz
-
-
-CREATE USER 'repl1'@'172.27.183.117' IDENTIFIED BY 'ReplSlave@123';
-GRANT REPLICATION SLAVE ON *.* TO 'repl1'@'172.27.183.117' IDENTIFIED BY 'ReplSlave@123';
-FLUSH PRIVILEGES;
-
-CREATE USER 'repl1'@'172.27.183.118' IDENTIFIED BY 'ReplSlave@123';
-GRANT REPLICATION SLAVE ON *.* TO 'repl1'@'172.27.183.118' IDENTIFIED BY 'ReplSlave@123';
-FLUSH PRIVILEGES;
-
-CHANGE MASTER TO MASTER_HOST= '172.27.183.118', MASTER_USER= 'repl1', MASTER_PASSWORD= 'ReplSlave@123', MASTER_LOG_FILE='mysql-bin.000002', MASTER_LOG_POS=7985;
-
-
-
-CHANGE MASTER TO MASTER_HOST= '172.27.183.117', MASTER_USER= 'repl1', MASTER_PASSWORD= 'ReplSlave@123', MASTER_LOG_FILE='mysql-bin.000003', MASTER_LOG_POS=154;
-
-
-CREATE USER 'repl2'@'172.27.183.117' IDENTIFIED BY 'ReplSlave@123';
-GRANT REPLICATION SLAVE ON *.* TO 'repl2'@'172.27.183.117' IDENTIFIED BY 'ReplSlave@123';
-FLUSH PRIVILEGES;
-
-mysqldump  sample  --single-transaction --skip-add-locks  --quick -R -E --triggers --set-gtid-purged=OFF --master-data=2 | gzip > sample.sql.gz
-
- CHANGE MASTER TO MASTER_LOG_FILE='mysql-bin.000002', MASTER_LOG_POS=2396;
- 
-CHANGE MASTER TO MASTER_HOST= '172.27.183.178', MASTER_USER= 'repl2', MASTER_PASSWORD= 'ReplSlave@123', MASTER_LOG_FILE='mysql-bin.000002', MASTER_LOG_POS=2396 for channel 'prdint-1';
-
-start slave for channel 'prdint-1';
-show slave status for channel 'prdint-1' \G
-
-stop slave for channel 'prdint-1';
